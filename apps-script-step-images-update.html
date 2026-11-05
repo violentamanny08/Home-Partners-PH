@@ -1,0 +1,71 @@
+<!--
+  HOME PARTNERS PH — STEP 01 / 02 / 03 UPDATE
+  Paste this block near the end of the Apps Script HTML file,
+  immediately before the closing </body> tag.
+
+  This uses the enhanced images stored in the public Home Partners PH
+  GitHub repository. It does not remove or alter the original photos.
+-->
+<style>
+  /* Keep the three new photos sharp and properly framed inside the cards. */
+  .reservation-step-img {
+    object-fit: cover !important;
+    object-position: center center !important;
+    padding: 0 !important;
+    image-rendering: auto;
+  }
+</style>
+
+<script>
+(function applyHomePartnersStepImages() {
+  'use strict';
+
+  const STEP_IMAGES = [
+    {
+      src: 'https://raw.githubusercontent.com/violentamanny08/Home-Partners-PH/main/assets/step-01-client-home-lane-success.png',
+      alt: 'Home Partners PH clients celebrating a successful home milestone'
+    },
+    {
+      src: 'https://raw.githubusercontent.com/violentamanny08/Home-Partners-PH/main/assets/step-02-house-reservation-with-clients-enhanced.png',
+      alt: 'Home Partners PH house reservation with clients'
+    },
+    {
+      src: 'https://raw.githubusercontent.com/violentamanny08/Home-Partners-PH/main/assets/step-03-document-signing-enhanced.png',
+      alt: 'Home Partners PH clients signing house reservation documents'
+    }
+  ];
+
+  function updateSteps() {
+    const images = Array.from(document.querySelectorAll('.reservation-step-img'));
+    const cards = Array.from(document.querySelectorAll('.reservation-card'));
+
+    STEP_IMAGES.forEach(function (photo, index) {
+      if (images[index]) {
+        images[index].src = photo.src;
+        images[index].alt = photo.alt;
+        images[index].loading = 'eager';
+        images[index].decoding = 'async';
+      }
+    });
+
+    // Step 02 title requested by the client.
+    if (cards[1]) {
+      const title = cards[1].querySelector('h3');
+      if (title) title.textContent = 'House Reservation with Clients';
+    }
+  }
+
+  // Apply now, after normal page parsing, and again if the cards are rendered later.
+  updateSteps();
+  window.addEventListener('load', updateSteps, { once: true });
+
+  const observer = new MutationObserver(function () {
+    updateSteps();
+    const imagesReady = document.querySelectorAll('.reservation-step-img').length >= 3;
+    const cardsReady = document.querySelectorAll('.reservation-card').length >= 3;
+    if (imagesReady && cardsReady) observer.disconnect();
+  });
+
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
